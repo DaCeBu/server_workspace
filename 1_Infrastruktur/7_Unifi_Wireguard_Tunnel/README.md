@@ -8,6 +8,7 @@ https://www.ionos.de/server/vps#tarife
 # Vorraussetungen in diesem Setup
 ### Diese Anleitung bezieht sich auf einer Unifi UDM Pro im Heimnetzwerk und einem VPS im Internet mit fester IP4 und einem installiertem Ubuntu. Die Anleitung lässt sich natürlich auch mit anderer Hard & Software einsetzen, allerdings sind dann nicht alle Befehle und Einstellungen identisch.
 
+
 # Setup Unifi UDM Pro
 ## Menü
 - Gehe auf -> System -> VPN -> VPN Client -> Create NEW
@@ -46,11 +47,11 @@ sollte man auch Port 80/443 öffnen.
 
 ## Installieren von Wireguard (falls nicht vorhanden)
 ```
-sudo apt update -y && sudo apt upgrade -y && sudo apt install software-properties-common wireguard wireguard-tools unzip -y
+apt update -y && apt upgrade -y && apt install software-properties-common wireguard wireguard-tools unzip -y
 ```
 # Einstellen der Port forwarding (falls nicht vorhanden)
 ```
-sudo nano /etc/sysctl.conf
+nano /etc/sysctl.conf
 ```
 ## Inhalt unten anhängen
 
@@ -68,21 +69,21 @@ net.ipv6.conf.lo.disable_ipv6 = 1
 ```
 ## Neustart und anzeigen ob alles korrekt
 ```
-sudo sysctl -p && sudo sysctl --system
+sysctl -p && sysctl --system
 ```
 
 ## Keys erzeugen
 ```
-(umask 077 && printf "PrivateKey= " | sudo tee /etc/wireguard/privatekey_unifi > /dev/null) && wg genkey | sudo tee -a /etc/wireguard/privatekey_unifi | wg pubkey | sudo tee /etc/wireguard/publickey_unifi && sudo cat /etc/wireguard/privatekey_unifi && sudo touch /etc/wireguard/unifi.conf
+(umask 077 && printf "PrivateKey= " | tee /etc/wireguard/privatekey_unifi > /dev/null) && wg genkey | tee -a /etc/wireguard/privatekey_unifi | wg pubkey | tee /etc/wireguard/publickey_unifi && cat /etc/wireguard/privatekey_unifi && touch /etc/wireguard/unifi.conf
 ```
 ## Keys anzeigen
 ```
-sudo cat /etc/wireguard/privatekey_unifi && sudo cat /etc/wireguard/publickey_unifi
+cat /etc/wireguard/privatekey_unifi && cat /etc/wireguard/publickey_unifi
 ```
 
 ## Wireguard conf erstellen
 ```
-sudo nano /etc/wireguard/unifi.conf
+nano /etc/wireguard/unifi.conf
 ```
 ## diesen Inhalt einfügen und die Parameter ändern
 ```
@@ -104,20 +105,20 @@ AllowedIPs = 10.10.10.0/24, !!!192.168.0.0/24 -> Hier die IP Netze der UDM Pro r
 ```
 # Wireguard starten
 ```
-sudo systemctl start wg-quick@unifi && sudo systemctl enable wg-quick@unifi
+systemctl start wg-quick@unifi && systemctl enable wg-quick@unifi
 ```
 ## Stoppen
 ```
-sudo systemctl stop wg-quick@unifi && sudo systemctl disable wg-quick@unifi
+systemctl stop wg-quick@unifi && systemctl disable wg-quick@unifi
 ```
 ## Stop & Start nacheinander
 ```
-sudo systemctl stop wg-quick@unifi && sudo systemctl disable wg-quick@unifi && sudo systemctl start wg-quick@unifi && sudo systemctl enable wg-quick@unifi
+systemctl stop wg-quick@unifi && systemctl disable wg-quick@unifi && systemctl start wg-quick@unifi && systemctl enable wg-quick@unifi
 ```
 
 # Testen ob Wireguard läuft
 ```
-sudo wg
+wg
 ```
 - Der Status zeigt folgendes:
 ```
