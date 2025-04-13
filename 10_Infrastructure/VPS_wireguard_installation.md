@@ -249,51 +249,124 @@ Wenn die WireGuard Bridge funktioniert, können alle Ports blockiert werden, bis
 | **SSH (falls nicht remote nötig)** | `22` | TCP | Nur offen lassen, wenn SSH gebraucht wird |
 
 
-### ** 🔒 Maximale Härtung der UDM Pro Firewall **
+## ** 🔒 Maximale Härtung der UDM Pro Firewall **
 
-#### 📌 Ziel:
-Nur noch die folgenden Verbindungen zulassen:  
-1️⃣ **Firezone-Clients → Heimserver `192.168.0.50` auf Port `8123`**  
-2️⃣ **Firezone-Clients → VPS (`10.10.10.1`) auf SSH (`Port 22`)**  
+### 🔧 Ziel
 
-🚀 **Alles andere wird blockiert!**  
+Erlaube einem VPN-Client (z. B. iPad via Firezone) den Zugriff auf **Home Assistant** im Heimnetzwerk.
 
----
+### 📍 Server-Details
 
-### ** 🛠 1️⃣ Firewall-Regeln für UDM Pro anpassen **
-
-#### ✅ Regel 1: Zugriff auf den Heimserver (`192.168.0.50:8123`) erlauben
-**Standort:** `Einstellungen → Routing & Firewall → Firewall-Regeln → Internet Local & Internet In`
-- **Name:** `Allow Firezone → Heimserver`
-- **Aktion:** **Allow**
-- **Source:** `VPN-Firezone (10.10.50.0/24)`
-- **Destination:** `192.168.0.50`
-- **Protokoll:** **TCP**
-- **Port:** `8123`
+- **Home Assistant IP:** `192.168.101.12`
+- **Home Assistant Port:** `8123` (TCP)
+- **VPN-Subnetz(e):** `10.10.50.0/24`, `10.10.10.0/24`
 
 ---
 
-#### ✅ Regel 2: Zugriff auf den VPS (`10.10.10.1:22`) erlauben
-**Standort:** `Einstellungen → Routing & Firewall → Firewall-Regeln → Internet Local & Internet In`
-- **Name:** `Allow Firezone → VPS SSH`
-- **Aktion:** **Allow**
-- **Source:** `VPN-Firezone (10.10.50.0/24)`
-- **Destination:** `10.10.10.1`
-- **Protokoll:** **TCP**
-- **Port:** `22`
+### ✅ Schritt-für-Schritt Anleitung
+
+#### **1️⃣ Profil erstellen: Zielgerät**
+
+**Ort:** *UniFi → Settings → Profiles → Network Groups*
+
+| Typ     | Name                                 | Inhalt              |
+|---------|--------------------------------------|---------------------|
+| Address | `VPN - Local Server - HomeAssistant` | `192.168.101.12`    |
 
 ---
 
-#### ❌ Regel 3: Alle anderen Verbindungen blockieren (Default-Deny)
-**Standort:** `Einstellungen → Routing & Firewall → Firewall-Regeln → Internet Local & Internet In`
-- **Name:** `Block All Firezone`
-- **Aktion:** **Deny**
-- **Source:** `VPN-Firezone (10.10.50.0/24)`
-- **Destination:** `Any`
-- **Protokoll:** `Any`
-- **Port:** `Any`
+#### **2️⃣ Profil erstellen: Ports**
+
+**Ort:** *UniFi → Settings → Profiles → Port Groups*
+
+| Typ     | Name                             | Ports   | Protokoll |
+|---------|----------------------------------|---------|-----------|
+| Port    | `VPN - Ports - HomeAssistant`    | `8123`  | TCP       |
+
+---
+
+#### **3️⃣ Firewallregel anlegen**
+
+**Ort:** *UniFi → Settings → Firewall → Internet In*
+
+| Feld              | Wert                                  |
+|-------------------|----------------------------------------|
+| **Name**          | `VPN → Home Assistant`                |
+| **Action**        | `Allow`                               |
+| **Protocol**      | `TCP`                                 |
+| **Source Type**   | `Address Group`                       |
+| **Source**        | `VPN - Remote Subnet`                 |
+| **Destination Type** | `Address Group`                   |
+| **Destination**   | `VPN - Local Server - HomeAssistant`  |
+| **Port Group**    | `VPN - Ports - HomeAssistant`         |
+
+> 🔁 **Wiederhole die Regel ggf. unter `Internet Local`, falls der Dienst auf der UDM selbst laufen sollte.**
+
+---
+
+### 🧪 Test
+
+**Vom VPN-Client (iPad):**
+
+```bash
+curl http://192.168.101.12:8123
+```
+→ Sollte die Home Assistant Weboberfläche zurückliefern.
+
 
 🚀 **Reihenfolge der Regeln beachten!**  
 ⚠️ **Die Block-Regel muss ganz unten stehen**, damit erst die erlaubten Verbindungen durchgelassen werden.
 
 ---
+
+## 🧱 UniFi Firewall – Unterschied zwischen „Internet In“ und „Internet Local“ (bei VPN)
+
+### 🔍 Hintergrund
+
+UniFi unterscheidet zwei zentrale Firewall-Zonen für eingehende Verbindungen aus externen Netzwerken:
+
+| Zone             | Beschreibung                                                                 |
+|------------------|------------------------------------------------------------------------------|
+| **Internet In**   | Betrifft alle Verbindungen **vom Internet** (z. B. VPN-Clients) an **interne Geräte** im LAN |
+| **Internet Local** | Betrifft alle Verbindungen **vom Internet** an die **UDM Pro selbst** (z. B. Web UI, SSH)     |
+
+### 📡 Warum betrifft VPN den „Internet“-Bereich?
+
+Obwohl VPN-Clients oft IPs wie `10.10.x.x` erhalten, behandelt UniFi diese standardmäßig **nicht als LAN**, sondern als **Internet**.
+
+Das gilt sowohl für:
+- Firezone (z. B. `10.10.50.0/24`)
+- WireGuard Bridge (z. B. `10.10.10.0/24`)
+
+---
+
+### ✅ Praxisbeispiele
+
+| Zugriff von       | Ziel                 | Benötigte Zone     | Erklärung                            |
+|-------------------|----------------------|---------------------|---------------------------------------|
+| VPN-Client (iPad) | `192.168.100.16`     | **Internet In**      | Gerät im LAN                          |
+| VPN-Client (iPad) | `10.10.10.2`         | **Internet Local**   | Zugriff auf die UDM Pro selbst (Web UI / SSH) |
+| VPN-Client (iPad) | `192.168.0.50:8123`  | **Internet In**      | Home Assistant im LAN                 |
+
+---
+
+### ✅ Empfehlung
+
+> 💡 **Immer beide Regeln anlegen**, wenn du nicht sicher bist.
+
+**Beispiel-Strategie:**
+- Regel 1: VPN → Heimserver (`Internet In`)
+- Regel 2: VPN → UDM Pro (`Internet Local`)
+- Regel 3: VPN → Ping erlaubt (`Internet In + Local`)
+- Regel 4: VPN Block All → **ganz unten** (`Internet In + Local`)
+
+---
+
+### 🧠 Merksatz
+
+> **„Internet Local = Zugriff auf die UDM Pro selbst“**  
+> **„Internet In = Zugriff auf alles andere im Heimnetz“**
+
+---
+
+
