@@ -1,0 +1,39 @@
+automation:
+  - alias: "❌ Backup Max fehlgeschlagen"
+    trigger:
+      - platform: time
+        at: "07:00:00"
+    condition:
+      - condition: template
+        value_template: "{{ states('sensor.backup_max_erfolg') != 'True' }}"
+    action:
+      - service: notify.mobile_app_dein_handy
+        data:
+          title: "Backup Max fehlgeschlagen"
+          message: "Backup Max ist heute nicht erfolgreich gelaufen."
+
+  - alias: "❌ Backup Anna fehlgeschlagen"
+    trigger:
+      - platform: time
+        at: "07:05:00"
+    condition:
+      - condition: template
+        value_template: "{{ states('sensor.backup_anna_erfolg') != 'True' }}"
+    action:
+      - service: notify.mobile_app_dein_handy
+        data:
+          title: "Backup Anna fehlgeschlagen"
+          message: "Backup Anna ist heute nicht erfolgreich gelaufen."
+
+  - alias: "❌ Backup Jonas fehlgeschlagen"
+    trigger:
+      - platform: time
+        at: "07:10:00"
+    condition:
+      - condition: template
+        value_template: "{{ states('sensor.backup_jonas_erfolg') != 'True' }}"
+    action:
+      - service: notify.mobile_app_dein_handy
+        data:
+          title: "Backup Jonas fehlgeschlagen"
+          message: "Backup Jonas ist heute nicht erfolgreich gelaufen."

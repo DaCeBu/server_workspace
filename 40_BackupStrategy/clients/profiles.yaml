@@ -1,0 +1,70 @@
+# ------------------------------------------------------
+# | ddddd   eeeee   ccccc   eeeee   bbbbb   u   u |
+# | d   d   e       c       e       b    b  u   u |
+# | d   d   eeee    c       eeee    bbbbb   u   u |
+# | d   d   e       c       e       b    b  u   u |
+# | ddddd   eeeee   ccccc   eeeee   bbbbb   uuuuu |
+# ------------------------------------------------------
+# HomeSmartHome – Docker-Stacks 
+# File: server_workspace\40_BackupStrategy\clients\max\profiles.yaml
+# Documentation: https://github.com/DaCeBu/server-workspace
+# Github Project: https://github.com/DaCeBu/server-workspace.git
+# Created by: DeCeBu (Data Excellence, Connectivity and Business)
+# ------------------------------------------------------
+
+# Dieses Profil sichert automatisiert auf das QNAP
+# ------------------------------------------------------
+# | ddddd   eeeee   ccccc   eeeee   bbbbb   u   u |
+# | d   d   e       c       e       b    b  u   u |
+# | d   d   eeee    c       eeee    bbbbb   u   u |
+# | d   d   e       c       e       b    b  u   u |
+# | ddddd   eeeee   ccccc   eeeee   bbbbb   uuuuu |
+# ------------------------------------------------------
+# HomeSmartHome – Docker-Stacks 
+# File: server_workspace\40_BackupStrategy\clients\max\profiles.yaml
+# Documentation: https://github.com/DaCeBu/server-workspace
+# Github Project: https://github.com/DaCeBu/server-workspace.git
+# Created by: DeCeBu (Data Excellence, Connectivity and Business)
+# ------------------------------------------------------
+
+default:
+  lock: "C:\\Windows\\Temp\\resticprofile-profile-default.lock"
+  force-inactive-lock: true
+  initialize: true
+  repository: "Z:\\backup_thomas\\restic-repo"
+  password-file: "C:\\Backup\\restic_password.txt"
+  status-file: "Z:\\backup_status\\restic_status_backup_thomas.json"  # zentral abgelegte JSON
+
+  run-before:
+    - 'cmd /c net use Z: \\192.168.30.2\backup /user:backup_thomas K~MNqVBq7J\~0CliQj*/'
+
+  run-finally:
+    - 'cmd /c net use Z: /delete'
+    - 'powershell Copy-Item -Path {{ tempFile "backup.log" }} -Destination backup{{ .Now.Format "2006-01-02T15-04-05" }}.log'
+   
+  backup:
+    source:
+      - "E:\\Anno1404"
+    exclude:
+      - "E:\\$RECYCLE.BIN"
+      - "E:\\System Volume Information"
+    schedule: "12:05"
+    schedule-permission: user
+    schedule-lock-wait: 10m
+    schedule-log: '{{ tempFile "backup.log" }}'
+    verbose: 2
+
+  forget:
+    keep-daily: 7
+    keep-weekly: 8
+    keep-monthly: 12
+    keep-yearly: 5
+    prune: true
+    schedule: "12:10"
+    schedule-permission: user
+    schedule-lock-wait: 1h
+
+  check:
+    schedule: "12:15"
+    schedule-permission: user
+    schedule-lock-wait: 1h

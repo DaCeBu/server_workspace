@@ -18,12 +18,14 @@ Diese Anleitung beschreibt Schritt für Schritt, wie du auf einem Windows-PC ein
 1. Offizielle Seite öffnen: https://restic.net
 2. Lade die aktuelle `restic.exe` herunter
 3. Lege sie in z. B. `C:\Programme\restic\`
-4. Öffne Systemsteuerung → System → Erweiterte Systemeinstellungen → Umgebungsvariablen
-5. Ergänze die **Systemvariable `Path`** um:
+4. Offizielle Seite öffnen: https://github.com/creativeprojects/resticprofile/releases
+5. Lege sie in z. B. `C:\Programme\resticprofile\`
+6. Öffne Systemsteuerung → System → Erweiterte Systemeinstellungen → Umgebungsvariablen
+7. Ergänze die **Systemvariable `Path`** um:
    ```
    C:\Programme\restic\
    ```
-6. Test in PowerShell oder CMD:
+8. Test in PowerShell oder CMD:
    ```powershell
    restic version
    ```

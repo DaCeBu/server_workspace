@@ -1,0 +1,18 @@
+sensor:
+  - platform: command_line
+    name: Backup Max Erfolg
+    command: cat /mnt/backup_status/max_status.json | jq -r '.profiles.default.backup.success'
+    value_template: "{{ value == 'true' }}"
+    scan_interval: 3600
+
+  - platform: command_line
+    name: Backup Anna Erfolg
+    command: cat /mnt/backup_status/anna_status.json | jq -r '.profiles.default.backup.success'
+    value_template: "{{ value == 'true' }}"
+    scan_interval: 3600
+
+  - platform: command_line
+    name: Backup Jonas Erfolg
+    command: cat /mnt/backup_status/jonas_status.json | jq -r '.profiles.default.backup.success'
+    value_template: "{{ value == 'true' }}"
+    scan_interval: 3600
