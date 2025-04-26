@@ -1,0 +1,57 @@
+# ------------------------------------------------------
+# | ddddd   eeeee   ccccc   eeeee   bbbbb   u   u |
+# | d   d   e       c       e       b    b  u   u |
+# | d   d   eeee    c       eeee    bbbbb   u   u |
+# | d   d   e       c       e       b    b  u   u |
+# | ddddd   eeeee   ccccc   eeeee   bbbbb   uuuuu |
+# ------------------------------------------------------
+# HomeSmartHome – Docker-Stacks 
+# File: server_workspace\40_BackupStrategy\clients\thomas\exclude.txt
+# Documentation: https://github.com/DaCeBu/server-workspace
+# Github Project: https://github.com/DaCeBu/server-workspace.git
+# Created by: DeCeBu (Data Excellence, Connectivity and Business)
+# ------------------------------------------------------
+
+# $ needs to be doubled because environment variables are expanded.
+# File names have to be case correct unless this is a iexclude file which it is.
+# This file is now used for case insensitive file names and dir.
+# restic directories and files to exclude
+# Microsoft has some recommendations in the registry under the key: FilesNotToBackup
+# 20200624 allow full backup of firefox & thunderbird files. The Windows option to be able to read open files will be used to backup the files.
+# Rcache_0 is a "special line" which indicates do not store cache files determined by restic
+
+*.pyc
+*.tmp
+**cache**
+**cache2**
+**~
+desktop.ini
+__pycache__
+C:\$$Recycle.Bin\**
+C:\.cache
+C:\Config.Msi
+C:\System Volume Information
+C:\Users\*\AppData\Local\Package Cache
+C:\Users\*\AppData\Local\Temp\
+C:\Users\*\AppData\Roaming\*\cache\
+C:\Users\*\appdata\index.dat
+C:\Users\*\local\microsoft\windows\inetcache
+C:\Users\*\local\temp
+C:\Windows\Temp\**
+C:\Windows\WinSxS\**
+C:\Windows\debug
+# hiberfil.sys keep ram contents when the computer goes into hibernation
+C:\hiberfil.sys
+C:\pagefile.sys
+C:\recycled
+C:\swapfile.sys
+C:\temp
+C:\tmp
+rCache_0
+
+E:\$$RECYCLE.BIN
+E:\$$RECYCLE.BIN\**
+E:\System Volume Information
+E:\System Volume Information\**
+E:\pagefile.sys
+E:\swapfile.sys
