@@ -192,13 +192,18 @@ sudo systemctl enable wg-quick@unifi wg-quick@hn2
 
 Da kein echtes Site-to-Site vorhanden ist, müssen die Netze von HN2 und Firezone explizit auf die Tunnel-IP des VPS geroutet werden. Das entfällt, wenn AllowedIPs verwendet werden kann. Da werden die Routen automatisch gesetzt. 
 
-- `192.168.20.0/24 → 10.10.10.1` (HN2)
+- `192.168.20.0/24 → 10.10.10.2` (HN2)
   - Distance 1
   - Next Hop
-- `10.10.50.0/24 → 10.10.10.1` (Firezone)
+- `10.10.50.0/24 → 10.10.10.2` (Firezone)
   - Distance 1
   - Next Hop
-
+- `10.10.10.0/24 → 10.10.10.2` (VPN Overlay HN1)
+  - Distance 1
+  - Next Hop
+- `10.10.20.0/24 → 10.10.10.2` (VPN Overlay HN2)
+  - Distance 1
+  - Next Hop
 ---
 
 ## 5. Heimnetz 2 (FRITZ!Box 5530)
