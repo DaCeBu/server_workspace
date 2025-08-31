@@ -17,13 +17,13 @@ Diese Anleitung beschreibt Schritt für Schritt, wie du auf einem Windows-PC ein
 
 1. Offizielle Seite öffnen: https://restic.net
 2. Lade die aktuelle `restic.exe` herunter
-3. Lege sie in z. B. `C:\Programme\restic\`
+3. Lege sie in z. B. `C:\restic\`
 4. Offizielle Seite öffnen: https://github.com/creativeprojects/resticprofile/releases
-5. Lege sie in z. B. `C:\Programme\resticprofile\`
+5. Lege sie in z. B. `C:\restic\`
 6. Öffne Systemsteuerung → System → Erweiterte Systemeinstellungen → Umgebungsvariablen
 7. Ergänze die **Systemvariable `Path`** um:
    ```
-   C:\Programme\restic\
+   C:\restic\
    ```
 8. Test in PowerShell oder CMD:
    ```powershell
@@ -76,8 +76,10 @@ An dieser Stelle das powershell Skript setup_restic_backup.ps1 ausführen.
 ```
 C:\
 ├── Backup\
+│   ├── profile.yaml
 │   ├── restic_backup.ps1
 │   └── restic_password.txt
+│   └── logs\
 ```
 
 ---

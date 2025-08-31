@@ -1,0 +1,41 @@
+{
+  "privacy_rules": {
+    "secrets": {
+      "patterns": [
+        "PrivateKey\\s*=\\s*.+",
+        "PresharedKey\\s*=\\s*.+",
+        "-----BEGIN.*KEY-----",
+        "[A-Za-z0-9+/]{32,}={0,2}"
+      ],
+      "replacement": "<SECRET>"
+    },
+    "passwords": {
+      "patterns": [
+        "Password\\s*=\\s*.+",
+        "PASSWD\\s*=\\s*.+",
+        "pwd\\s*=\\s*.+"
+      ],
+      "replacement": "<PASSWORD>"
+    },
+    "api_tokens": {
+      "patterns": [
+        "API[_-]?KEY\\s*=\\s*.+",
+        "TOKEN\\s*=\\s*.+",
+        "CLOUDFLARE_API_TOKEN\\s*=\\s*.+"
+      ],
+      "replacement": "<API_TOKEN>"
+    },
+    "public_ips_domains": {
+      "patterns": [
+        "\\b([0-9]{1,3}\\.){3}[0-9]{1,3}\\b",
+        "\\b[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\\b"
+      ],
+      "exceptions": [
+        "192\\.168\\..*",
+        "10\\..*",
+        "172\\.(1[6-9]|2[0-9]|3[01])\\..*"
+      ],
+      "replacement": "<PUBLIC_ENDPOINT>"
+    }
+  }
+}
